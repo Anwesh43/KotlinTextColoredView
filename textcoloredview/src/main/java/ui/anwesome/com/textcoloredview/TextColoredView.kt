@@ -10,8 +10,12 @@ import android.graphics.*
 class TextColoredView(ctx:Context,var text:String,var color:Int = Color.RED):View(ctx) {
     val paint = Paint(Paint.ANTI_ALIAS_FLAG)
     val renderer = Renderer(this)
+    var onTextColoredListener:TextColoredListener?=null
     override fun onDraw(canvas:Canvas) {
         renderer.render(canvas,paint)
+    }
+    fun addOnTextColoredListener(onColorListener: () -> Unit,onColorOverListener: () -> Unit) {
+        onTextColoredListener = TextColoredListener(onColorListener,onColorOverListener)
     }
     override fun onTouchEvent(event:MotionEvent):Boolean {
         when(event.action) {
@@ -102,6 +106,10 @@ class TextColoredView(ctx:Context,var text:String,var color:Int = Color.RED):Vie
             animator.animate {
                 coloredText?.update {
                     animator.stop()
+                    when(it) {
+                        0f -> view.onTextColoredListener?.onColorOverListener?.invoke()
+                        1f -> view.onTextColoredListener?.onColorListener?.invoke()
+                    }
                 }
             }
         }
@@ -111,6 +119,7 @@ class TextColoredView(ctx:Context,var text:String,var color:Int = Color.RED):Vie
             }
         }
     }
+    data class TextColoredListener(var onColorListener:()->Unit,var onColorOverListener:()->Unit)
     companion object {
         fun create(activity:Activity,text:String):TextColoredView {
             val view = TextColoredView(activity,text)
