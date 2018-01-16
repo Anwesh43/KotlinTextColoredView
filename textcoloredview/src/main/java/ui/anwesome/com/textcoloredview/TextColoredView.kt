@@ -81,4 +81,28 @@ class TextColoredView(ctx:Context,var text:String,var color:Int = Color.RED):Vie
             }
         }
     }
+    data class Renderer(var view:TextColoredView,var time:Int = 0) {
+        var coloredText:ColoredText ?= null
+        val animator = Animator(view)
+        fun render(canvas:Canvas,paint:Paint) {
+            if(time == 0) {
+                val w = canvas.width.toFloat()
+                val h = canvas.height.toFloat()
+                coloredText = ColoredText(view.text,view.color,w/2,h/2,Math.min(w,h)/7)
+            }
+            canvas.drawColor(Color.parseColor("#212121"))
+            coloredText?.draw(canvas,paint)
+            time++
+            animator.animate {
+                coloredText?.update {
+                    animator.stop()
+                }
+            }
+        }
+        fun handleTap() {
+            coloredText?.startUpdating {
+                animator.start()
+            }
+        }
+    }
 }
