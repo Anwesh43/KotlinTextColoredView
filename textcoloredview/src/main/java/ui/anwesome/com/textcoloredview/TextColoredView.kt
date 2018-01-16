@@ -20,23 +20,25 @@ class TextColoredView(ctx:Context,var text:String,var color:Int = Color.RED):Vie
         return true
     }
     data class ColoredText(var text:String,var color:Int,var x:Float,var y:Float,var size:Float) {
+        val state = ColoredTextState()
         fun draw(canvas:Canvas,paint:Paint) {
             paint.textSize = size
             val tw = paint.measureText(text)
             canvas.save()
             canvas.translate(x,y)
             val path = Path()
-            path.addRect(RectF(-tw/2,-size/2,tw/2,size/2),Path.Direction.CW)
+            val rect_width = (tw/2)*state.scale
+            path.addRect(RectF(-rect_width,-size/2,rect_width,size/2),Path.Direction.CW)
             canvas.clipPath(path)
             paint.color = color
             canvas.drawText(text,-tw/2,0f,paint)
             canvas.restore()
         }
         fun update(stopcb:(Float)->Unit) {
-
+            state.update(stopcb)
         }
         fun startUpdating(startcb:()->Unit) {
-
+            state.startUpdating(startcb)
         }
     }
     data class ColoredTextState(var scale:Float = 0f,var dir:Float = 0f,var prevScale:Float = 0f) {
