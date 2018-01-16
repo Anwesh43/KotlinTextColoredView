@@ -3,6 +3,7 @@ package ui.anwesome.com.textcoloredview
 /**
  * Created by anweshmishra on 16/01/18.
  */
+import android.app.Activity
 import android.view.*
 import android.content.*
 import android.graphics.*
@@ -104,6 +105,13 @@ class TextColoredView(ctx:Context,var text:String,var color:Int = Color.RED):Vie
             coloredText?.startUpdating {
                 animator.start()
             }
+        }
+    }
+    companion object {
+        fun create(activity:Activity,text:String):TextColoredView {
+            val view = TextColoredView(activity,text)
+            activity.setContentView(view)
+            return view
         }
     }
 }
