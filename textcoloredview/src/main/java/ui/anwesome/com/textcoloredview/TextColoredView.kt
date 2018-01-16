@@ -28,12 +28,16 @@ class TextColoredView(ctx:Context,var text:String,var color:Int = Color.RED):Vie
             val tw = paint.measureText(text)
             canvas.save()
             canvas.translate(x,y)
+            paint.color = Color.WHITE
+            canvas.drawText(text,-tw/2,size/4,paint)
+            canvas.save()
             val path = Path()
             val rect_width = (tw/2)*state.scale
             path.addRect(RectF(-rect_width,-size/2,rect_width,size/2),Path.Direction.CW)
             canvas.clipPath(path)
             paint.color = color
-            canvas.drawText(text,-tw/2,0f,paint)
+            canvas.drawText(text,-tw/2,size/4,paint)
+            canvas.restore()
             canvas.restore()
         }
         fun update(stopcb:(Float)->Unit) {
